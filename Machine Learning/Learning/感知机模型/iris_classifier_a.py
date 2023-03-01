@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @Project ：ML-and-DL-master 
-@File    ：iris_data_a.py
+@File    ：iris_classifier_a.py
 @IDE     ：PyCharm 
 @Author  ：Sig-M
 @Date    ：Created on 2023/2/28 16:13 
@@ -15,12 +15,12 @@ df = pd.read_csv("iris.csv", header=None)
 print(df.tail())
 
 # select setosa and versicolor
-y = df.iloc[0:100, 4].values
+y = df.iloc[0:100, 5].values
 # print(y)
 y = np.where(y == 'Iris-setosa', -1, 1)
 # print(y)
 
-x = df.iloc[0:100, [0, 2]].values
+x = df.iloc[0:100, [1, 3]].values
 
 # plt.scatter(x[:50, 0], x[:50, 1], color='red', marker='o', label='Iris-setosa')
 # plt.scatter(x[50:100, 0], x[50:100, 1], color='blue', marker='x', label='Iris-versicolor')
