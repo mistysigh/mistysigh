@@ -9,9 +9,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import perceptron_beginner
+import classification_simple
 
-df = pd.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data", header=None)
+df = pd.read_csv("iris.csv", header=None)
 print(df.tail())
 
 # select setosa and versicolor
@@ -29,7 +29,7 @@ x = df.iloc[0:100, [0, 2]].values
 # plt.legend(loc='upper left')
 # plt.show()
 
-ppn = perceptron_beginner.Perceptron(eta=0.1, n_iter=30)
+ppn = classification_simple.Perceptron(eta=0.1, n_iter=30)
 ppn.fit(x, y)
 plt.plot(range(1, len(ppn.errors_) + 1), ppn.errors_, marker='o')
 plt.xlabel('Epochs')
