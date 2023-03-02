@@ -162,6 +162,120 @@ class AdalineGD(object):
         return np.where(self.activation(self.net_input(x)) >= 0.0, 1, -1)
 
 
+class AdalineSGD(object):
+    """
+        ADAptive Linear Neuron Classifier.
+
+        Parameters
+        ------------------
+        eta : float
+            Learning rate (between 0.0 and 1.0)
+        n_iter : int
+            Passes over the training dataset.
+        shuffle : bool (deefault : True)
+            Shuffles training data every epoch i True to
+            prevent cycles.
+        random_state : int
+            Random number generator seed for random weight
+            initialization.
+
+        Attributes
+        ------------------
+        w_ : 1d-array
+            Weights after fitting.
+        cost_ : list
+            Sum-of-squares cost function value averaged over
+            all training samples in each epoch.
+
+        """
+
+    def __init__(self, eta=0.01, n_iter=50, shuffle=True,
+                 random_state=None):
+        self.eta = eta
+        self.n_iter = n_iter
+        self.w_initialized = False
+        self.shuffle = shuffle
+        self.random_state = random_state
+
+    def fit(self, x, y):
+        """
+        Fit training data.
+        ==================
+        Parameters
+        ------------------
+        x : {array-like}, shape = [n_samples, n_features]
+            Training vectors, where n_samples is the number of samples and
+            n_features is the number of features.
+
+        y : array-like, [n_samples]
+            Target values.
+
+        Returns
+        ------------------
+        self : object
+
+        """
+        self._initialize_weights(x.shape[1])
+        self.cost_ = []
+        for i in range(self.n_iter):
+            if self.shuffle:
+                x, y =self._shuffle(x, y)
+                cost = []
+                for xi, target in zip(x, y):
+                    cost.append(self._update_weights(xi, target))
+                avg_cost = sum(cost) / len(y)
+                self.cost_.append(avg_cost)
+        return self
+
+    def partial_fit(self, x, y):
+        """Fit training data without reinitializing the weights"""
+        if not self.w_initialized:
+            self._initialize_weights(x.shape[1])
+        if y.ravel().shape[0] > 1:
+            for xi, target in zip(x, y):
+                self._update_weights(xi, target)
+        else:
+            self._update_weights(x, y)
+        return self
+
+    def _shuffle(self, x, y):
+        """Shuffle training data"""
+        r = self.rgen.permutation(len(y))       # generate 0~100 的独立数字的随机序列
+        return x[r], y[r]
+
+    def _initialize_weights(self, m):
+        self.rgen = np.random.RandomState(self.random_state)  # 随机数种子
+        self.w_ = self.rgen.normal(loc=0.0, scale=0.01, size=1 + m)
+        self.w_initialized = True
+
+    def _update_weights(self, xi, target):
+        """Apply Adaline learning rule to update the weights"""
+        output = self.activation(self.net_input(xi))
+        error = (target - output)
+        self.w_[1:] += self.eta * xi.dot(errors)
+        self.w_[0] += self.eta * error
+        cost = (error ** 2).sum() / 2
+        return cost
+    def net_input(self, x):
+        """
+        Calculate net input
+        """
+        return np.dot(x, self.w_[1:]) + self.w_[0]
+
+    def activation(self, x):
+        """
+        Compute linear activation
+        """
+        return x
+
+    def predict(self, x):
+        """
+        Return class label after unit step
+        """
+        return np.where(self.activation(self.net_input(x)) >= 0.0, 1, -1)
+
+
+
 def plot_decision_regions(x, y, classifier, resolution=0.02):
     # setup marker generator and color map
     markers = ('s', '^', 'o', 'x', 'v')
