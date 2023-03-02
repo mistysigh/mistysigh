@@ -17,6 +17,10 @@ y = df.iloc[0:100, 5].values
 y = np.where(y == 'Iris-setosa', -1, 1)
 x = df.iloc[0:100, [1, 3]].values
 
+# 标准化处理
+x_std = np.copy(x)
+x_std[:, 0] = (x[:, 0]-x[:, 0].mean()) / x[:, 0].std()
+x_std[:, 1] = (x[:, 1]-x[:, 1].mean()) / x[:, 1].std()
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
 ada1 = classification_simple.AdalineGD(n_iter=10, eta=0.01).fit(x, y)
 ax[0].plot(range(1, len(ada1.cost_)+1), np.log10(ada1.cost_), marker='o')

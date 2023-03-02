@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import classification_simple
+from classification_simple import Perceptron, plot_decision_regions
 
 df = pd.read_csv("iris.csv", header=None)
 print(df.tail())
@@ -29,10 +30,17 @@ x = df.iloc[0:100, [1, 3]].values
 # plt.legend(loc='upper left')
 # plt.show()
 
-ppn = classification_simple.Perceptron(eta=0.1, n_iter=30)
-ppn.fit(x, y)
-plt.plot(range(1, len(ppn.errors_) + 1), ppn.errors_, marker='o')
-plt.xlabel('Epochs')
-plt.ylabel('Number of updates')
-plt.show()
+# ppn = Perceptron(eta=0.1, n_iter=30)
+# ppn.fit(x, y)
+# plt.plot(range(1, len(ppn.errors_) + 1), ppn.errors_, marker='o')
+# plt.xlabel('Epochs')
+# plt.ylabel('Number of updates')
+# plt.show()
 
+ppn = Perceptron(eta=0.1, n_iter=5)
+ppn.fit(x, y)
+plot_decision_regions(x, y, classifier=ppn)
+plt.xlabel('sepal length [cm]')
+plt.ylabel('petal length [cm]')
+plt.legend(loc='upper left')
+plt.show()
